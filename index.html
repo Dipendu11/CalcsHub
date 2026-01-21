@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>AP Lang Calculator - Predict Your Exam Score (1-5) | iLove Calcs</title>
+<meta name="description" content="Calculate your projected AP English Language score (1-5) instantly. Enter your Multiple Choice and Essay scores to see your final composite grade. Updated for the 2026 exam format.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ilovecalcs.pages.dev/ap-lang-calculator/">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ilovecalcs.pages.dev/ap-lang-calculator/">
+<meta property="og:title" content="AP Lang Score Calculator - Will You Get a 5?">
+<meta property="og:description" content="Don't guess your grade. Enter your practice test results to calculate your official AP English Language score prediction.">
+<meta property="og:image" content="https://ilovecalcs.pages.dev/images/social-share.jpg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "AP Lang Calculator",
+  "url": "https://ilovecalcs.pages.dev/ap-lang-calculator/",
+  "description": "A free online educational tool that calculates AP English Language & Composition exam scores based on multiple choice and free response essay grades.",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "All",
+  "browserRequirements": "Requires JavaScript. Compatible with all modern browsers.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock"
+  }
+}
+</script>
+    
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    
+
+    <style>
+        /* Section Dividers */
+        .section-header {
+            margin-bottom: 15px; border-bottom: 1px solid var(--border-subtle); 
+            padding-bottom: 10px; font-weight: 600; color: var(--primary);
+            font-size: 0.95rem; display: flex; align-items: center; gap: 8px;
+        }
+
+        /* Settings Bar */
+        .settings-bar {
+            background: var(--bg-body); padding: 12px; border-radius: 8px;
+            border: 1px solid var(--border-subtle); margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 10px; font-size: 0.85rem;
+        }
+        
+        .curve-select {
+            padding: 6px 10px; border: 1px solid var(--border-subtle);
+            background: var(--bg-card); color: var(--text-main); border-radius: 6px;
+            font-size: 0.85rem; outline: none; cursor: pointer; flex: 1;
+        }
+        .curve-select:focus { border-color: var(--primary); }
+
+        /* Results Area */
+        .result-container {
+            display: none; margin-top: 25px; padding-top: 25px;
+            border-top: 1px dashed var(--border-subtle); animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .big-number {
+            font-size: 3.5rem; font-weight: 800; color: var(--primary);
+            line-height: 1; font-family: 'Poppins', sans-serif;
+        }
+
+        .result-badge {
+            display: inline-block; background: var(--primary); color: white; padding: 4px 12px;
+            border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-top: 8px;
+        }
+
+        /* Math Visualization */
+        .math-breakdown {
+            margin-top: 20px; background: rgba(79, 70, 229, 0.05);
+            border: 1px solid var(--border-subtle); padding: 12px;
+            border-radius: 8px; font-family: 'Courier New', monospace;
+            font-size: 0.85rem; color: var(--text-muted); text-align: center;
+        }
+
+        /* Tables */
+        .data-card {
+            background: var(--bg-body); padding: 15px; border-radius: 8px; 
+            border: 1px solid var(--border-subtle); margin-top: 15px;
+        }
+        .data-card h3 {
+            font-size: 0.95rem; margin-bottom: 10px; color: var(--text-main);
+            border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px;
+        }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .data-table td { padding: 6px 0; border-bottom: 1px solid var(--border-subtle); color: var(--text-muted); }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table td:last-child { text-align: right; font-weight: 600; color: var(--text-main); }
+
+        /* Heatmap */
+        .heatmap-container { margin-top: 10px; overflow-x: auto; }
+        .heatmap-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: center; }
+        .heatmap-table th, .heatmap-table td { padding: 6px; border: 1px solid var(--border-subtle); }
+        .heatmap-table th { background: var(--bg-card); color: var(--text-main); font-weight: 600; }
+        
+        .heatmap-cell-5 { background-color: rgba(16, 185, 129, 0.2); color: #047857; font-weight: bold; }
+        .heatmap-cell-4 { background-color: rgba(16, 185, 129, 0.1); color: #047857; }
+        .heatmap-cell-3 { background-color: rgba(245, 158, 11, 0.15); color: #b45309; }
+        .heatmap-cell-2 { background-color: rgba(239, 68, 68, 0.1); color: #b91c1c; }
+        .heatmap-cell-1 { background-color: rgba(239, 68, 68, 0.2); color: #b91c1c; }
+
+        /* Content / Blog Styles */
+        .curve-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px; margin-bottom: 30px; margin-top: 20px;
+        }
+        .curve-card {
+            background: var(--bg-body); border: 1px solid var(--border-subtle);
+            border-radius: 8px; padding: 20px 15px; text-align: center;
+            border-top: 5px solid var(--primary); box-shadow: var(--shadow-card);
+        }
+        .curve-score { font-size: 2rem; font-weight: 800; color: var(--text-main); line-height: 1.1; margin-bottom: 5px; }
+        .curve-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 10px; }
+        .curve-range { font-size: 0.9rem; color: var(--text-main); font-weight: 700; background: var(--bg-card); padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 5px; }
+        .curve-desc { font-size: 0.8rem; color: var(--text-muted); }
+        
+        .curve-5 { border-top-color: #10b981; } 
+        .curve-4 { border-top-color: #34d399; } 
+        .curve-3 { border-top-color: #f59e0b; } 
+        .curve-2 { border-top-color: #ef4444; } 
+
+        details { margin-bottom: 15px; border: 1px solid var(--border-subtle); border-radius: 8px; background: var(--bg-body); overflow: hidden; }
+        details summary { padding: 15px; cursor: pointer; font-weight: 600; background: var(--bg-card); list-style: none; color: var(--text-main); }
+        details summary::-webkit-details-marker { display: none; }
+        details summary::after { content: '+'; float: right; font-weight: bold; }
+        details[open] summary::after { content: '-'; }
+        details p { margin: 15px; line-height: 1.6; color: var(--text-muted); }
+        
+        /* Button overrides */
+        .btn-clear {
+            background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border-subtle);
+            padding: 12px; border-radius: 6px; font-weight: 600; flex: 1; cursor: pointer; transition: 0.2s;
+        }
+        .btn-clear:hover { background: rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body>
+
+
+    <script>
+    (function() {
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    })();
+</script>
+
+    <main class="main-content">
+        
+        <section class="tool-hero">
+            <h1>AP Lang Calculator</h1>
+            <p>Estimate your AP English Language score based on College Board grading curves.</p>
+        </section>
+
+        <div class="content-wrapper">
+            
+            <div class="tool-layout">
+                
+                <div class="tool-panel">
+                    
+                    <div class="settings-bar">
+                        <span style="font-weight: 600; color: var(--text-main);">
+                            <i class="fas fa-sliders-h"></i> Grading Curve:
+                        </span>
+                        <select id="difficultySelector" class="curve-select" onchange="if(document.getElementById('essay1').value) calculateAP()">
+                            <option value="lenient">Easy Year</option>
+                            <option value="average" selected>Average</option>
+                            <option value="strict">Hard Year</option>
+                        </select>
+                    </div>
+
+                    <div class="section-header">
+                        <i class="fas fa-list-ul"></i> Section I: Multiple Choice
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label" for="mcq">Correct Answers (0-45)</label>
+                        <input type="number" id="mcq" class="tool-input" placeholder="e.g., 35" inputmode="numeric" min="0" max="45">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 5px; text-align: right;">
+                            Counts for 45% of score
+                        </div>
+                    </div>
+
+                    <div class="section-header" style="margin-top: 25px;">
+                        <i class="fas fa-pen-nib"></i> Section II: Essays
+                    </div>
+
+                    <div class="tool-grid">
+                        <div class="input-group">
+                            <label class="input-label" for="essay1">Q1: Synthesis (0-6)</label>
+                            <select id="essay1" class="tool-input">
+                                <option value="" disabled selected>Select Score</option>
+                                <option value="6">6 - Sophisticated</option>
+                                <option value="5">5 - Effective</option>
+                                <option value="4">4 - Adequate</option>
+                                <option value="3">3 - Developing</option>
+                                <option value="2">2 - Weak</option>
+                                <option value="1">1 - Poor</option>
+                                <option value="0">0 - Incomplete</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label" for="essay2">Q2: Rhetorical (0-6)</label>
+                            <select id="essay2" class="tool-input">
+                                <option value="" disabled selected>Select Score</option>
+                                <option value="6">6 - Sophisticated</option>
+                                <option value="5">5 - Effective</option>
+                                <option value="4">4 - Adequate</option>
+                                <option value="3">3 - Developing</option>
+                                <option value="2">2 - Weak</option>
+                                <option value="1">1 - Poor</option>
+                                <option value="0">0 - Incomplete</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label" for="essay3">Q3: Argument (0-6)</label>
+                            <select id="essay3" class="tool-input">
+                                <option value="" disabled selected>Select Score</option>
+                                <option value="6">6 - Sophisticated</option>
+                                <option value="5">5 - Effective</option>
+                                <option value="4">4 - Adequate</option>
+                                <option value="3">3 - Developing</option>
+                                <option value="2">2 - Weak</option>
+                                <option value="1">1 - Poor</option>
+                                <option value="0">0 - Incomplete</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn-calc" onclick="calculateAP()">Calculate Score</button>
+                        <button class="btn-clear" onclick="clearTool()">Reset</button>
+                    </div>
+
+                    <div id="results" class="result-container">
+                        
+                        <div style="text-align:center; margin-bottom: 20px;">
+                            <p style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 5px;">Estimated AP Score</p>
+                            <div class="big-number"><span id="finalScore">0</span></div>
+                            <div id="scoreBadge" class="result-badge" style="display:none;">Qualified</div>
+                        </div>
+
+                        <div class="math-breakdown">
+                            <i class="fas fa-calculator" style="margin-right:5px;"></i> 
+                            <span id="formulaText">Composite = MCQ + (Essays × 3.0555)</span>
+                        </div>
+
+                        <div class="data-card">
+                            <h3><i class="fas fa-chart-bar" style="color: #3b82f6; margin-right: 8px;"></i> Breakdown</h3>
+                            <table class="data-table">
+                                <tr>
+                                    <td>MCQ Score</td>
+                                    <td id="mcqRawDisplay">0</td>
+                                </tr>
+                                <tr>
+                                    <td>Essays Total</td>
+                                    <td id="essayRawDisplay">0 / 18</td>
+                                </tr>
+                                <tr>
+                                    <td>Composite Score</td>
+                                    <td><span id="compositeDisplay">0</span> / 100</td>
+                                </tr>
+                                <tr>
+                                    <td>College Credit</td>
+                                    <td id="creditVal">--</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="data-card">
+                            <h3><i class="fas fa-th" style="color: #f59e0b; margin-right: 8px;"></i> "What-If" Matrix</h3>
+                            <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px;">
+                                Rows: MCQ | Cols: Essay Avg
+                            </p>
+                            <div class="heatmap-container">
+                                <table class="heatmap-table" id="heatmapTable"></table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="manual-links-container" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-subtle);">
+        <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 15px; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+            You Might Also Like
+        </h3>
+        <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+            <a href="../long-division-calculator/" style="text-decoration: none; padding: 12px 15px; background:var(--bg-body); border:1px solid var(--border-subtle); border-radius:8px; display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-main);">Long Division Calculator</span>
+                <span style="font-size: 1rem; color: var(--primary);">&rarr;</span>
+            </a>
+            <a href="../sat-score-calculator/" style="text-decoration: none; padding: 12px 15px; background:var(--bg-body); border:1px solid var(--border-subtle); border-radius:8px; display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-main);">SAT Score Calculator</span>
+                <span style="font-size: 1rem; color: var(--primary);">&rarr;</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+                <div class="content-panel">
+    
+    <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 20px; color: var(--text-main);">
+        Cracking the Code: The Ultimate Guide to the AP Lang Calculator
+    </h2>
+
+    <p>Imagine this: It’s May. You are sitting in a silent gymnasium, staring at a packet of 18th-century speeches and contemporary editorials. Your hand is cramping, your brain is fried, and you have exactly two hours and fifteen minutes to write three distinct essays that demonstrate you are a master of the English language.</p>
+
+    <p>For hundreds of thousands of high school students every year, the AP English Language and Composition exam is the academic Super Bowl. It is high stakes, high pressure, and frankly, a little mysterious. Unlike a math test where you know exactly how many points a question is worth, AP Lang feels subjective. How does a checkmark on a bubble sheet combine with a handwritten essay about the value of handwriting to produce a single number between 1 and 5?</p>
+
+    <p>This is where the AP Lang Calculator becomes your secret weapon.</p>
+
+    <p>Many students treat these calculators as crystal balls, simply punching in numbers to see if they "passed." But if you understand the algorithm behind the tool, it becomes much more than a predictor—it becomes a strategist. In this deep dive, we will peel back the curtain on the scoring ecosystem, explaining exactly how your score is calculated, how to use the tool to reverse-engineer a 5, and what that score actually means for your college future.</p>
+
+    <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 30px 0;">
+
+    <h2>Deconstructing the Beast: How the Exam is Actually Scored</h2>
+    <p>To use an AP Lang calculator effectively, you first have to understand the architecture of the exam. The College Board has engineered a hybrid assessment that measures two very different skill sets: your ability to analyze text (Reading) and your ability to construct text (Writing).</p>
+    
+    
+
+    <p>The calculator’s job is to take these two disparate data points—machine-scored multiple-choice questions and human-scored essays—and merge them into a single "Composite Score."</p>
+
+    <h3>Section I: The Quantitative Anchor (45%)</h3>
+    <p>The first part of the exam is the Multiple-Choice Question (MCQ) section. It consists of 45 questions to be answered in one hour.</p>
+    <ul>
+        <li><strong>The Weight:</strong> This section accounts for 45% of your total exam score.</li>
+        <li><strong>The Skills:</strong> You will face "Reading Questions" (analyzing claims, evidence, and rhetorical situations) and "Writing Questions" (thinking like an editor to improve clarity and flow).</li>
+    </ul>
+    <p>For the purpose of the calculator, this is simple math. You get 1 point for every correct answer. There is no penalty for guessing. If you answer 30 questions correctly, your raw score is 30. This creates a mathematical "safety net." If you are a strong reader, you can bank nearly half your total score before you even pick up a pen to write an essay.</p>
+
+    <h3>Section II: The Subjective Engine (55%)</h3>
+    <p>The Free-Response Question (FRQ) section is where the magic (and the anxiety) happens. You write three essays: Synthesis, Rhetorical Analysis, and Argument.</p>
+    <ul>
+        <li><strong>The Weight:</strong> This section accounts for 55% of your total score.</li>
+        <li><strong>The Scoring:</strong> Since 2019, essays are scored on an Analytic Rubric of 0–6 points.</li>
+    </ul>
+    <p>Here is where the calculator input gets tricky. You aren't just giving yourself a grade; you are evaluating three specific criteria:</p>
+    <ul>
+        <li><strong>Row A (Thesis):</strong> Did you have a defensible argument? (0-1 point).</li>
+        <li><strong>Row B (Evidence & Commentary):</strong> Did you provide specific evidence and explain how it supports your thesis? (0-4 points).</li>
+        <li><strong>Row C (Sophistication):</strong> Did you demonstrate a nuanced understanding or a vivid style? (0-1 point).</li>
+    </ul>
+    <p>When you type a "4" into an AP Lang calculator, you are usually telling the algorithm that you got the Thesis point and did a solid job with Evidence (3 points), but missed the elusive Sophistication point.</p>
+
+    <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 30px 0;">
+
+    <h2>The Math Behind the Magic: How the Calculator Works</h2>
+    <p>So, how does a raw score of 30 on the multiple-choice and a set of "4s" on the essays turn into an AP score? The calculator uses a Weighted Sum Formula.</p>
+    <p>The goal of the algorithm is to balance the 45 raw points from Section I and the 18 raw points from Section II (3 essays × 6 points max) so they fit the 45/55 percentage split.</p>
+
+    <h3>The Weighting Formula</h3>
+    <p>Most calculators work on a 100-point composite scale (think of it like a percentage).</p>
+    <ul>
+        <li><strong>The MCQ Multiplier:</strong> Your raw multiple-choice score is multiplied by 1.0. If you get 40 right, you have 40 composite points.</li>
+        <li><strong>The FRQ Multiplier:</strong> Your raw essay total is multiplied by approximately 3.0556.</li>
+    </ul>
+    <p><em>Why? Because 18 raw points need to scale up to represent 55% of the grade.</em></p>
+
+    <div style="background: var(--bg-body); padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid var(--primary);">
+        <strong>The Math:</strong> If you score a 4 on all three essays, your raw total is 12. The calculator does the math: <br>
+        12 &times; 3.0556 = 36.66 composite points.<br><br>
+        <strong>Total Composite Score = (Raw MCQ) + (Raw FRQ &times; 3.0556)</strong>
+    </div>
+
+    <h3>The "Curve" (It’s Not What You Think)</h3>
+    <p>Once the calculator has your Composite Score (e.g., 76.6), it has to decide if that is a 4 or a 5. This brings us to the most misunderstood concept in AP testing: The Curve.</p>
+    <p>Contrary to popular belief, AP exams are not graded on a normative bell curve. The College Board does not decide that "only the top 10% get a 5." Instead, the exam is criterion-referenced. You are measured against a standard of excellence. Theoretically, if everyone performs perfectly, everyone could get a 5.</p>
+    <p>However, exams vary in difficulty. The 2024 Synthesis prompt might be slightly harder than the 2023 prompt. To be fair, statisticians use a process called equating to adjust the "Cut Scores."</p>
+    <ul>
+        <li><strong>Harder Exam:</strong> You might only need a composite of 72 to get a 5.</li>
+        <li><strong>Easier Exam:</strong> You might need a composite of 78 to get a 5.</li>
+    </ul>
+    <p>A good AP Lang calculator will usually offer you a choice of curves (Average, Strict, or Lenient) based on historical data. Using an "Average" curve is usually the safest bet for planning.</p>
+
+    <div style="background: rgba(79, 70, 229, 0.1); padding: 15px; border-radius: 8px; margin-top: 15px;">
+        <strong>Typical Composite Score Ranges:</strong>
+        <ul style="margin-top: 10px; margin-bottom: 0;">
+            <li><strong>5 (Extremely Well Qualified):</strong> 75–100</li>
+            <li><strong>4 (Well Qualified):</strong> 65–74</li>
+            <li><strong>3 (Qualified):</strong> 53–64</li>
+            <li><strong>2 (Possibly Qualified):</strong> 36–52</li>
+        </ul>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 30px 0;">
+
+    <h2>Step-by-Step: How to Use the Calculator Strategically</h2>
+    <p>Using the calculator is easy; entering accurate data is hard. The "Garbage In, Garbage Out" principle applies here. If you guess your scores, the prediction is worthless. Follow this workflow for the best results.</p>
+
+    <h3>Step 1: Get Real Data</h3>
+    <p>Do not just estimate. Sit down and take a full-length practice exam.</p>
+    <ul>
+        <li>Take the multiple-choice section in exactly one hour.</li>
+        <li>Write the three essays in two hours and fifteen minutes.</li>
+    </ul>
+    <p>This provides a legitimate baseline.</p>
+
+    <h3>Step 2: The Self-Grading Challenge</h3>
+    <p>Grading your own multiple-choice is easy (use the answer key). Grading your own essays is notoriously difficult. We all have a bias toward our own writing.</p>
+    <ul>
+        <li><strong>The "Pessimistic" Approach:</strong> If you think your essay is a "4," put it into the calculator as a "3." If you still pass with the lower score, you are in a safe zone.</li>
+        <li><strong>The Rubric Check:</strong> Be honest about Row C (Sophistication). This point is rare—awarded to only about 5-15% of essays. Do not give yourself this point unless your writing is truly exceptional.</li>
+    </ul>
+
+    <h3>Step 3: Run the Numbers</h3>
+    <p>Input your raw MCQ score (e.g., 35/45) and your three essay scores (e.g., 4, 3, 4). The calculator will spit out your composite and your predicted AP score.</p>
+
+    <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 30px 0;">
+
+    <h2>Real-Life Scenarios: "What-If" Analysis</h2>
+    <p>The true power of the AP Lang calculator lies in "What-If" analysis. By tweaking the numbers, you can find the most efficient path to improving your score. Let’s look at three common student archetypes.</p>
+
+    <div style="background: var(--bg-body); padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--primary);">
+        <h3 style="margin-top: 0;">Scenario A: The "Rhetorician" (Strong Writer, Weak Test Taker)</h3>
+        <p>This student loves to write. They can weave beautiful arguments and analyze rhetoric with depth, consistently scoring 5s on their essays. However, they struggle with the rapid-fire analysis of the multiple-choice section.</p>
+        <p><strong>The Baseline:</strong> MCQ: 22/45 (48% accuracy) | Essays: 5, 5, 5 (Elite writing)<br>
+        <strong>Result:</strong> The calculator predicts a <strong>Score of 4</strong>.</p>
+        <p><strong>The Problem:</strong> Despite writing better essays than 90% of the country, the MCQ score is dragging the composite down to roughly 67.</p>
+        <p><strong>The Strategy:</strong> To reach the "Cut Score" of 75 for a 5, this student needs about 8 more points. Improving the essays from 5 to 6 is incredibly hard. However, improving the MCQ from 22 to 30 is very doable with practice.</p>
+        <p><strong>Verdict:</strong> Stop writing practice essays. Spend all your study time on multiple-choice strategy.</p>
+    </div>
+
+    <div style="background: var(--bg-body); padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--primary);">
+        <h3 style="margin-top: 0;">Scenario B: The "Analyzer" (Strong Reader, Weak Writer)</h3>
+        <p>This student is a logic machine. They ace the reading questions but freeze up when asked to write. Their essays are short and lack depth.</p>
+        <p><strong>The Baseline:</strong> MCQ: 40/45 (Elite accuracy) | Essays: 2, 2, 2 (Weak)<br>
+        <strong>Result:</strong> The calculator predicts a <strong>Score of 3</strong>.</p>
+        <p><strong>The Problem:</strong> An elite reading score is being neutralized by failing essays.</p>
+        <p><strong>The Strategy:</strong> Look at the rubric. A "2" usually means a Thesis (1 point) and minimal Evidence (1 point). If this student can just improve their evidence slightly to get a "3" on each essay, the math changes dramatically.</p>
+        <p><strong>The "What-If":</strong> Changing essays to 3, 3, 3 raises the score to a solid 4.</p>
+        <p><strong>Verdict:</strong> Don't try to become a poet. Just focus on structure and evidence to move from "bad" to "adequate." The MCQ score will carry the rest.</p>
+    </div>
+
+    <div style="background: var(--bg-body); padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--primary);">
+        <h3 style="margin-top: 0;">Scenario C: The "Balanced Average"</h3>
+        <p>This student is decent at everything but great at nothing.</p>
+        <p><strong>The Baseline:</strong> MCQ: 28/45 | Essays: 3, 3, 3<br>
+        <strong>Result:</strong> The calculator predicts a <strong>low 3</strong>.</p>
+        <p><strong>The Danger:</strong> This student is on the edge. A slightly harder exam could drop them to a 2.</p>
+        <p><strong>The Strategy:</strong> They need a "hybrid" approach. Aim for 5 more MCQ questions and try to bump just one essay to a 4.</p>
+        <p><strong>Verdict:</strong> This creates a composite score of roughly 66, securing a safe 4.</p>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 30px 0;">
+
+    <h2>What Does the Score Actually Mean?</h2>
+    <p>When the calculator flashes a "4" or a "5," what is that worth in the real world? It depends entirely on where you apply.</p>
+
+    <h3>Tier 1: The Ivy League & Elite Privates (MIT, Stanford, Harvard)</h3>
+    <p>These schools are incredibly restrictive. A calculator prediction of "3" or even "4" often yields zero credit here.</p>
+    <ul>
+        <li><strong>MIT:</strong> Only accepts a 5. Even then, it only gives elective credit. You still have to take their writing requirement.</li>
+        <li><strong>Stanford:</strong> Typically requires a 4 or 5 for general units, but department policies vary.</li>
+    </ul>
+
+    <h3>Tier 2: Public Ivies & Flagships (UT Austin, UF, Ohio State)</h3>
+    <p>These schools are generally more generous, and this is where the AP Lang calculator helps you visualize tuition savings.</p>
+    <ul>
+        <li><strong>UT Austin:</strong> A score of 3, 4, or 5 grants credit for RHE 306, the standard freshman Rhetoric course. This allows you to test out of a required class, saving you time and money.</li>
+        <li><strong>University of Florida:</strong> A 3 gets you 3 credits (ENC 1101). A 4 or 5 gets you 6 credits (ENC 1101 and 1102). That is two full classes finished before you step on campus.</li>
+    </ul>
+
+    <h3>Tier 3: State Systems</h3>
+    <p>Many state systems (like Ohio and Florida) have laws requiring public colleges to accept a score of 3. If you are attending one of these schools, a calculator result of "3" is financially equivalent to a "5."</p>
+
+    <h3>Table: Sample Credit Policies</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Institution</th>
+                <th>Score of 3</th>
+                <th>Score of 4</th>
+                <th>Score of 5</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>MIT</td>
+                <td>No Credit</td>
+                <td>No Credit</td>
+                <td>9 Units Elective</td>
+            </tr>
+            <tr>
+                <td>Stanford</td>
+                <td>No Credit</td>
+                <td>Credit (Units vary)</td>
+                <td>Credit (Units vary)</td>
+            </tr>
+            <tr>
+                <td>U. of Florida</td>
+                <td>ENC 1101 (3 Credits)</td>
+                <td>ENC 1101 & 1102 (6 Credits)</td>
+                <td>ENC 1101 & 1102 (6 Credits)</td>
+            </tr>
+            <tr>
+                <td>Ohio State</td>
+                <td>English 1110 (3 Credits)</td>
+                <td>English 1110 (3 Credits)</td>
+                <td>English 1110 (3 Credits)</td>
+            </tr>
+            <tr>
+                <td>UT Austin</td>
+                <td>RHE 306 (3 Credits)</td>
+                <td>RHE 306 (3 Credits)</td>
+                <td>RHE 306 (3 Credits)</td>
+            </tr>
+        </tbody>
+    </table>
+    <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 30px 0;">
+
+    <h2>Limitations: What the Calculator Can't Do</h2>
+    <p>While the AP Lang calculator is a powerful tool, it is not flawless. Here are the pitfalls you need to avoid.</p>
+
+    <h3>1. It Cannot Predict the Equating Variance</h3>
+    <p>In 2024, the percentage of students earning a 5 dropped to roughly 9.8%. This suggests the exam was either statistically "easier" (requiring a higher raw score to hit the top tier) or the grading standards were tightened. A calculator using 2022 data might predict a 5 for a score that would only earn a 4 in 2025. Always use the "Strict" curve setting if you want to be safe.</p>
+
+    <h3>2. It Cannot Grade Your Essays</h3>
+    <p>The calculator is a math engine; it cannot read. If you enter a "6" for an essay that is actually a "3," the calculator will happily give you a false prediction. The biggest error students make is awarding themselves the Sophistication Point (Row C) for simply writing a long essay or using big vocabulary words. In reality, that point rewards complex rhetorical understanding, not just length.</p>
+
+    <h3>3. It Ignores Human Subjectivity</h3>
+    <p>AP Readers are trained professionals, but they are still human. Two different readers might debate between a 3 and a 4 on a borderline essay. The calculator treats scores as fixed integers, ignoring the margin of error inherent in subjective grading.</p>
+
+    <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 30px 0;">
+
+    <h2>Conclusion</h2>
+    <p>The AP English Language and Composition exam is a beast, but it is a beast that can be tamed with data. The AP Lang Calculator transforms the abstract goal of "doing well" into a concrete set of targets.</p>
+
+    <p>By calculating your baseline and running "What-If" scenarios, you can stop wasting time on skills you have already mastered and focus on the specific metrics that will move the needle. Whether you are the "Rhetorician" who needs to drill multiple-choice or the "Analyzer" who needs to polish their evidence, the math reveals the path.</p>
+
+    <p>Use the tool to plan, use it to track progress, but remember: the calculator doesn't take the test. You do. Use the data to build your confidence, then walk into that exam room and write like you mean it.</p>
+
+    <h3>References</h3>
+    <ul style="font-size: 0.9rem; color: var(--text-muted);">
+        <li>College Board. (2024). AP English Language and Composition Course and Exam Description. AP Central.</li>
+        <li>College Board. (2024). AP English Language and Composition Score Distributions. AP Students.</li>
+        <li>College Board. (2019). AP English Language and Composition Scoring Rubrics. AP Central.</li>
+        <li>University of Florida. (2016). AP Examination Credit Info. UF Undergrad Catalog.</li>
+        <li>MIT First Year. (n.d.). Advanced Placement. MIT Office of the First Year.</li>
+    </ul>
+
+    </div> 
+
+
+</div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="../layout.js" defer></script>
+    <script src="../cookie.js" defer></script>
+
+    <script>
+        // Listen for "Enter" key on MCQ input
+        document.getElementById('mcq').addEventListener('keypress', event => {
+            if (event.key === 'Enter') calculateAP();
+        });
+
+        // CUTOFF PRESETS
+        const cutoffPresets = {
+            strict:  { 5: 75, 4: 65, 3: 54, 2: 42 }, // Hard Year
+            average: { 5: 73, 4: 62, 3: 52, 2: 40 }, // Standard
+            lenient: { 5: 70, 4: 60, 3: 50, 2: 38 }  // Easy Year
+        };
+
+        function calculateAP() {
+            // 1. Get Values
+            const mcqInput = document.getElementById("mcq");
+            const e1Input = document.getElementById("essay1");
+            const e2Input = document.getElementById("essay2");
+            const e3Input = document.getElementById("essay3");
+
+            let mcq = parseFloat(mcqInput.value);
+            let e1 = parseFloat(e1Input.value);
+            let e2 = parseFloat(e2Input.value);
+            let e3 = parseFloat(e3Input.value);
+
+            // Get Curve Difficulty from Dropdown
+            const difficultySelect = document.getElementById("difficultySelector");
+            const difficulty = difficultySelect.value;
+            const cuts = cutoffPresets[difficulty];
+
+            // 2. Validation
+            if (isNaN(mcq) || mcq < 0 || mcq > 45) {
+                alert("Please enter a valid MCQ score between 0 and 45.");
+                mcqInput.focus();
+                return;
+            }
+            if (isNaN(e1)) e1 = 0;
+            if (isNaN(e2)) e2 = 0;
+            if (isNaN(e3)) e3 = 0;
+
+            if (e1Input.value === "" || e2Input.value === "" || e3Input.value === "") {
+                alert("Please select a score for all three essays.");
+                return;
+            }
+
+            // 3. Calculation Formula (Standard AP Weighting)
+            const essaySum = e1 + e2 + e3;
+            const weightedEssays = essaySum * 3.0555;
+            const composite = mcq + weightedEssays;
+            const finalComposite = Math.round(composite);
+
+            // 4. Determine AP Score based on Curve Selection
+            let score = 1;
+            let badgeText = "Not Qualified";
+            let badgeColor = "#ef4444"; // Red
+            let rec = "No Credit";
+            let cred = "None";
+
+            if (finalComposite >= cuts[5]) {
+                score = 5;
+                badgeText = "Extremely Well Qualified";
+                badgeColor = "#10b981"; // Green
+                rec = "Yes";
+                cred = "3-6 Credits";
+            } else if (finalComposite >= cuts[4]) {
+                score = 4;
+                badgeText = "Well Qualified";
+                badgeColor = "#10b981";
+                rec = "Yes";
+                cred = "3 Credits";
+            } else if (finalComposite >= cuts[3]) {
+                score = 3;
+                badgeText = "Qualified";
+                badgeColor = "#f59e0b"; // Orange
+                rec = "Possible";
+                cred = "Depends on College";
+            } else if (finalComposite >= cuts[2]) {
+                score = 2;
+                badgeText = "Possibly Qualified";
+                badgeColor = "#ef4444";
+            }
+
+            // 5. Update DOM
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.style.display = "block";
+            
+            // Score & Badge
+            document.getElementById("finalScore").innerText = score;
+            const badge = document.getElementById("scoreBadge");
+            badge.style.display = "inline-block";
+            badge.innerText = badgeText;
+            badge.style.background = badgeColor;
+
+            // Transparency: Show the math
+            document.getElementById("formulaText").innerHTML = 
+                `${mcq} (MCQ) + (${essaySum} × 3.0555) = <strong>${finalComposite}</strong>`;
+
+            // Table Data
+            document.getElementById("mcqRawDisplay").innerText = mcq;
+            document.getElementById("essayRawDisplay").innerText = essaySum + " / 18";
+            document.getElementById("compositeDisplay").innerText = finalComposite;
+            document.getElementById("creditVal").innerText = cred;
+
+            // Generate What-If Matrix
+            generateMatrix(cuts);
+            
+            // Wait for display:block to render, then animate opacity
+            setTimeout(() => {
+                resultsDiv.style.opacity = '1';
+                resultsDiv.style.transform = 'translateY(0)';
+            }, 10);
+        }
+
+        function generateMatrix(cuts) {
+            const table = document.getElementById("heatmapTable");
+            table.innerHTML = ""; // Clear existing
+
+            // Headers (Essay Averages)
+            let headerRow = "<tr><th>MCQ \\ Essay</th><th>Avg 3</th><th>Avg 4</th><th>Avg 5</th><th>Avg 6</th></tr>";
+            table.innerHTML += headerRow;
+
+            // Rows (MCQ Scores: 20, 25, 30, 35, 40, 45)
+            const mcqSteps = [25, 30, 35, 40, 45];
+            const essayAvgs = [3, 4, 5, 6];
+
+            mcqSteps.forEach(m => {
+                let row = `<tr><th>${m}</th>`;
+                essayAvgs.forEach(avg => {
+                    // Calculate hypothetical score
+                    let totalEssay = avg * 3; 
+                    let comp = Math.round(m + (totalEssay * 3.0555));
+                    
+                    let s = 1;
+                    if (comp >= cuts[5]) s = 5;
+                    else if (comp >= cuts[4]) s = 4;
+                    else if (comp >= cuts[3]) s = 3;
+                    else if (comp >= cuts[2]) s = 2;
+
+                    row += `<td class="heatmap-cell-${s}">${s}</td>`;
+                });
+                row += "</tr>";
+                table.innerHTML += row;
+            });
+        }
+
+        function clearTool() {
+            document.getElementById("mcq").value = "";
+            document.getElementById("essay1").selectedIndex = 0;
+            document.getElementById("essay2").selectedIndex = 0;
+            document.getElementById("essay3").selectedIndex = 0;
+            document.getElementById("results").style.display = "none";
+            document.getElementById("difficultySelector").value = "average";
+        }
+    </script>
+</body>
+</html>
